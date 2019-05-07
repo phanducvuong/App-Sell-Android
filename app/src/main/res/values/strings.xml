@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Sell App</string>
+    <string name="txt_shop">Thế giới mua sắm trong tầm tay bạn</string>
+    <string name="txt_shipper">Giao hàng tận nơi - Thanh toán dễ dàng</string>
+    <string name="txt_payment">100% bảo vệ người tiêu dùng</string>
+    <string name="exit">Exit app</string>
+    <string name="exit_message">Are you sure?</string>
+    <string name="txtDanhMuc">DANH MỤC</string>
+
+</resources>
