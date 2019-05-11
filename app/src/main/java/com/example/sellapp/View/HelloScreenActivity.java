@@ -1,4 +1,4 @@
-package com.example.sellapp.View.ScrHello;
+package com.example.sellapp.View;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.sellapp.R;
-import com.example.sellapp.View.SrcHome.HomeActivity;
 
 public class HelloScreenActivity extends AppCompatActivity {
 

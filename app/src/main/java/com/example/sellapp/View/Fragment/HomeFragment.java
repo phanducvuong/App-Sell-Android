@@ -79,8 +79,6 @@ public class HomeFragment extends Fragment {
         mViewFlipperSlide = v.findViewById(R.id.view_flipper);
         mProductHighLightRecy = v.findViewById(R.id.product_recycle);
 
-        mNestScroll = v.findViewById(R.id.nested_scroll);
-
         //Add animation for viewflipper
         mIn = AnimationUtils.loadAnimation(getContext(), anim.slide_in_right);
         mOut = AnimationUtils.loadAnimation(getContext(), anim.slide_out_left);

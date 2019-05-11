@@ -1,6 +1,7 @@
 package com.example.sellapp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,8 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sellapp.Config;
 import com.example.sellapp.Model.CategoryModel.ListCategory;
 import com.example.sellapp.R;
+import com.example.sellapp.View.FashionByMenuActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -45,12 +48,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Recycl
 
         mHolder.mTxtCate.setText(mListCategory.get(i).getmCateName());
         Picasso.get()
-                .load("http://192.168.1.105:3000/" + mListCategory.get(i).getmCatePic())
+                .load(Config.URL + mListCategory.get(i).getmCatePic())
                 .placeholder(R.drawable.icon_home)
                 .error(R.drawable.circle_bg)
                 .into(mHolder.mImgCate);
 
-        mHolder.setItemClickListener((view, position) -> Toast.makeText(context, mListCategory.get(position).getmCateName(), Toast.LENGTH_SHORT).show());
+        mHolder.setItemClickListener((view, position) -> {
+
+            Intent mIntent = new Intent(this.context, FashionByMenuActivity.class);
+            mIntent.putExtra("ID", mListCategory.get(position).getId());
+            mIntent.putExtra("CateName", mListCategory.get(position).getmCateName());
+            this.context.startActivity(mIntent);
+
+        });
     }
 
     @Override

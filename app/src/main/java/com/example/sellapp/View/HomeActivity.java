@@ -1,4 +1,4 @@
-package com.example.sellapp.View.SrcHome;
+package com.example.sellapp.View;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
