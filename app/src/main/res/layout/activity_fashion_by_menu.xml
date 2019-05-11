@@ -31,9 +31,9 @@
                 android:id="@+id/btn_back"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/back"
                 android:background="@color/white"
-                android:padding="@dimen/_14sdp"
-                android:text="Back" />
+                android:padding="@dimen/_14sdp"/>
 
             <EditText
                 android:id="@+id/edt_menu_name"
@@ -41,7 +41,7 @@
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_width="@dimen/_240sdp"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/icon_filter"
+                android:drawableLeft="@drawable/search"
                 android:drawablePadding="@dimen/_5sdp"
                 android:background="@drawable/shape_for_search"
                 android:layout_gravity="center_vertical"
