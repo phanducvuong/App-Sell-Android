@@ -19,29 +19,26 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class ProductHighlightAdapter extends RecyclerView.Adapter<ProductHighlightAdapter.RecycleViewHolder> {
+public class ProductByCateMenuIdAdapter extends RecyclerView.Adapter<ProductByCateMenuIdAdapter.ViewHolder> {
 
-    private List<ListProduct> mListProduct;
     private Context mContext;
+    private List<ListProduct> mListProduct;
 
-    public ProductHighlightAdapter(List<ListProduct> mListProduct, Context mContext) {
-        this.mListProduct = mListProduct;
+    public ProductByCateMenuIdAdapter(Context mContext, List<ListProduct> mListProduct) {
         this.mContext = mContext;
+        this.mListProduct = mListProduct;
     }
 
     @NonNull
     @Override
-    public RecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
-        LayoutInflater mLayoutInflate = LayoutInflater.from(mContext);
-        View mItemView = mLayoutInflate.inflate(R.layout.custom_recycleview_product_highlight_layout, viewGroup, false);
-
-        return new RecycleViewHolder(mItemView);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater mLayoutInflate = LayoutInflater.from(viewGroup.getContext());
+        View v = mLayoutInflate.inflate(R.layout.custom_product_by_cate_layout, viewGroup, false);
+        return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecycleViewHolder mHolder, int i) {
-
+    public void onBindViewHolder(@NonNull ViewHolder mHolder, int i) {
         Picasso.get()
                 .load(Config.URL + mListProduct.get(i).getProductPicBig())
                 .error(R.drawable.color_cursor)
@@ -51,7 +48,7 @@ public class ProductHighlightAdapter extends RecyclerView.Adapter<ProductHighlig
         mHolder.mTxtProductName.setText(mListProduct.get(i).getProductName());
         mHolder.mTxtProductPrice.setText(FortmartPrice(mListProduct.get(i).getProductPrice()));
 
-        mHolder.setItemClickListener((view, position) -> Toast.makeText(mContext, mListProduct.get(position).getProductName(), Toast.LENGTH_SHORT).show());
+        mHolder.SetItemClickListener((v, position) -> Toast.makeText(mContext, mListProduct.get(position).getProductName(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -59,15 +56,15 @@ public class ProductHighlightAdapter extends RecyclerView.Adapter<ProductHighlig
         return mListProduct.size();
     }
 
-    public class RecycleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView mImgProduct;
         TextView mTxtProductName;
         TextView mTxtProductPrice;
 
-        private ItemClickListener mItemClickListener;
+        ItemClickListener mItemClickListener;
 
-        public RecycleViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mImgProduct = itemView.findViewById(R.id.img_product);
@@ -77,7 +74,7 @@ public class ProductHighlightAdapter extends RecyclerView.Adapter<ProductHighlig
             itemView.setOnClickListener(this);
         }
 
-        public void setItemClickListener(ItemClickListener itemClickListener) {
+        public void SetItemClickListener(ItemClickListener itemClickListener) {
             this.mItemClickListener = itemClickListener;
         }
 

@@ -27,4 +27,10 @@ public class HelloScreenActivity extends AppCompatActivity {
         });
         thread.start();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.finish();
+    }
 }

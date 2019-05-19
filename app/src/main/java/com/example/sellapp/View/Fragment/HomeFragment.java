@@ -1,35 +1,22 @@
 package com.example.sellapp.View.Fragment;
 
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.example.sellapp.Adapter.CategoryAdapter;
 import com.example.sellapp.Adapter.ProductHighlightAdapter;
-import com.example.sellapp.Config;
-import com.example.sellapp.Model.SlideModel.ListSlide;
 import com.example.sellapp.R;
-import com.example.sellapp.R.anim;
 import com.example.sellapp.Retrofit.RetrofitClient;
 import com.example.sellapp.Retrofit.RetrofitService;
-import com.squareup.picasso.Picasso;
-
-import java.util.List;
+import com.example.sellapp.Util.SlideShow;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -43,7 +30,7 @@ public class HomeFragment extends Fragment {
 
     //RECYCLEVIEW CATEGORY
     private RecyclerView mCateRecycleView;
-    private CategoryAdapter mCateAdapter;
+    private CategoryAdapter mCategoryAdapter;
 
     //RETROFIT
     private CompositeDisposable compositeDisposable;
@@ -52,13 +39,10 @@ public class HomeFragment extends Fragment {
 
     //SLIDE SHOW
     ViewFlipper mViewFlipperSlide;
-    Animation mIn, mOut;
 
     //PRODUCT HIGHLIGHT
     private RecyclerView mProductHighLightRecy;
     private ProductHighlightAdapter mProductHLAdapter;
-
-    NestedScrollView mNestScroll;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -79,10 +63,6 @@ public class HomeFragment extends Fragment {
         mViewFlipperSlide = v.findViewById(R.id.view_flipper);
         mProductHighLightRecy = v.findViewById(R.id.product_recycle);
 
-        //Add animation for viewflipper
-        mIn = AnimationUtils.loadAnimation(getContext(), anim.slide_in_right);
-        mOut = AnimationUtils.loadAnimation(getContext(), anim.slide_out_left);
-
         //RecycleView category
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2, LinearLayoutManager.HORIZONTAL, false);
         mCateRecycleView.setLayoutManager(mLayoutManager);
@@ -94,23 +74,23 @@ public class HomeFragment extends Fragment {
         mProductHighLightRecy.setHasFixedSize(true);
 
         SlideShow();
-        getDataCate();
+        getDataMenuCate();
         getDataProductHighLight();
 
         return v;
     }
 
     //GET DATA CATEGORY
-    private void getDataCate() {
+    private void getDataMenuCate() {
 
         compositeDisposable.add(mRetrofitService.getCategory()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(category -> {
 
-                    mCateAdapter = new CategoryAdapter(category.getmCategory(), getActivity());
-                    mCateRecycleView.setAdapter(mCateAdapter);
-                    mCateAdapter.notifyDataSetChanged();
+                    mCategoryAdapter = new CategoryAdapter(category.getmCategory(), getActivity());
+                    mCateRecycleView.setAdapter(mCategoryAdapter);
+                    mCategoryAdapter.notifyDataSetChanged();
                 }));
     }
 
@@ -120,29 +100,10 @@ public class HomeFragment extends Fragment {
         compositeDisposable.add(mRetrofitService.getSlide()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(slide -> CustomViewFlipper(slide.getmListSlide())));
-    }
-
-    //CUSTOM ViewFLIPPER
-    private void CustomViewFlipper(List<ListSlide> mListSlide) {
-
-        for (int i = 0; i < mListSlide.size(); i++) {
-
-            ImageView mImageSlide = new ImageView(getContext());
-            mImageSlide.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-            Picasso.get()
-                    .load(Config.URL + mListSlide.get(i).getmSlideImg())
-                    .into(mImageSlide);
-
-            mViewFlipperSlide.addView(mImageSlide);
-            mViewFlipperSlide.startFlipping();
-            mViewFlipperSlide.setInAnimation(mIn);
-            mViewFlipperSlide.setOutAnimation(mOut);
-            mViewFlipperSlide.setFlipInterval(3000);
-            mViewFlipperSlide.setAutoStart(true);
-
-        }
+                .subscribe(slide -> {
+                    SlideShow mSlideShow = new SlideShow(slide.getmListSlide(), getActivity(), mViewFlipperSlide);
+                    mSlideShow.showSlide();
+                }));
     }
 
     //GET DATA PRODUCT HIGHLIGHT

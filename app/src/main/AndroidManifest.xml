@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.FashionByMenuActivity"></activity>
+        <activity android:name=".View.ProductByCateMenuActivity"></activity>
+        <activity android:name=".View.FashionByMenuActivity" />
         <activity
             android:name=".View.HelloScreenActivity"
             android:screenOrientation="portrait">

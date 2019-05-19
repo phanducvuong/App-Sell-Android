@@ -6,5 +6,10 @@
     <string name="exit">Exit app</string>
     <string name="exit_message">Are you sure?</string>
     <string name="txtDanhMuc">DANH MỤC</string>
+    <string name="txt_san_pham_moi">Sản Phẩm Mới</string>
+    <string name="danh_muc">Danh mục</string>
+    <string name="ban_chay">Bán Chạy</string>
+    <string name="gia">Giá</string>
+    <string name="moi_nhat">Mới Nhất</string>
 
 </resources>

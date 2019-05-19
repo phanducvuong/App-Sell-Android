@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.ProductByCateMenuActivity"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimaryDark"
+            android:backgroundTint="@color/white">
+
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/back"
+                    android:background="@color/white"
+                    android:padding="@dimen/_14sdp"/>
+
+                <EditText
+                    android:id="@+id/edt_cate_menu_name"
+                    android:padding="@dimen/_7sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_width="@dimen/_240sdp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:background="@drawable/shape_for_search"
+                    android:layout_gravity="center_vertical"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:inputType="text"
+                    android:textColorHighlight="@color/white"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_newest"
+                    android:text="@string/moi_nhat"
+                    android:layout_weight="1"
+                    android:stateListAnimator="@null"
+                    android:background="@color/white"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="|"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/_15sdp"/>
+
+                <Button
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_best_sell"
+                    android:text="@string/ban_chay"
+                    android:layout_weight="1"
+                    android:stateListAnimator="@null"
+                    android:background="@color/white"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="|"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/_15sdp"/>
+
+                <Button
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_price"
+                    android:text="@string/gia"
+                    android:drawableEnd="@drawable/icon_arrow_filter"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:stateListAnimator="@null"
+                    android:background="@color/white"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_product_by_cate_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_2sdp"
+                android:layout_marginRight="@dimen/_2sdp"
+                app:cardCornerRadius="@dimen/_5sdp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycle_product_by_cate_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </android.support.v7.widget.CardView>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

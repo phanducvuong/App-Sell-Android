@@ -44,7 +44,6 @@
 
                 <ViewFlipper
                     android:id="@+id/view_flipper"
-                    app:layout_scrollFlags="scroll|enterAlways|snap"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_100sdp">
 

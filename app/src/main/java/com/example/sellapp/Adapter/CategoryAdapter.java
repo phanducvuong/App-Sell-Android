@@ -9,21 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.sellapp.Config;
 import com.example.sellapp.Model.CategoryModel.ListCategory;
 import com.example.sellapp.R;
+import com.example.sellapp.Util.ItemClickListener;
 import com.example.sellapp.View.FashionByMenuActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.RecycleViewHolder> {
-
-    public interface ItemClickListener {
-        void onClick(View view, int position);
-    }
 
     private List<ListCategory> mListCategory;
     private Context context;
@@ -59,7 +55,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Recycl
             mIntent.putExtra("ID", mListCategory.get(position).getId());
             mIntent.putExtra("CateName", mListCategory.get(position).getmCateName());
             this.context.startActivity(mIntent);
-
         });
     }
 

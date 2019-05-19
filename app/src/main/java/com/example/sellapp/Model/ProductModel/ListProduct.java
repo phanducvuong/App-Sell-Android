@@ -37,6 +37,18 @@ public class ListProduct {
     @Expose
     private BrandId brandId;
 
+    @SerializedName("menu_id")
+    @Expose
+    private MenuId menuId;
+
+    public MenuId getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(MenuId menuId) {
+        this.menuId = menuId;
+    }
+
     public String getId() {
         return mId;
     }

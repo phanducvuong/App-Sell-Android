@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.sellapp.Config;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.R;
+import com.example.sellapp.Util.ItemClickListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -22,10 +23,6 @@ public class ProductByCateIDAdapter extends RecyclerView.Adapter<ProductByCateID
 
     private Context mContext;
     private List<ListProduct> mListProduct;
-
-    public interface ItemClickListener {
-        void onClick(View v, int position);
-    }
 
     public ProductByCateIDAdapter(Context mContext, List<ListProduct> mListProduct) {
         this.mContext = mContext;

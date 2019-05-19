@@ -6,21 +6,19 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.ViewFlipper;
 
+import com.example.sellapp.Adapter.CateMenuAdapter;
 import com.example.sellapp.Adapter.ProductByCateIDAdapter;
-import com.example.sellapp.Model.ProductModel.Product;
 import com.example.sellapp.R;
 import com.example.sellapp.Retrofit.RetrofitClient;
 import com.example.sellapp.Retrofit.RetrofitService;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,8 +30,14 @@ public class FashionByMenuActivity extends AppCompatActivity implements View.OnC
     private EditText mTxtMenuName;
     private Button mBtnBack;
 
+    private ViewFlipper mViewFlipper;
+    private Animation mIn, mOut;
+
     private ProductByCateIDAdapter mProductByCateAdapter;
     private RecyclerView mRecycleProductByCate;
+
+    private CateMenuAdapter mCateMenuAdapter;
+    private RecyclerView mRecycleCateMenu;
 
     private Retrofit mRetrofitClient;
     private RetrofitService mRetrofitService;
@@ -42,13 +46,16 @@ public class FashionByMenuActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fashion_by_menu);
+        setContentView(R.layout.activity_product_by_category);
 
         mTxtMenuName = findViewById(R.id.edt_menu_name);
         mBtnBack = findViewById(R.id.btn_back);
         mRecycleProductByCate = findViewById(R.id.recycle_product_by_cate);
+        mRecycleCateMenu = findViewById(R.id.CateMenuRecycle);
+        mViewFlipper = findViewById(R.id.view_flipper_fashion_men);
 
         ConfigRetrofit();
+
         mBtnBack.setOnClickListener(this);
 
         Intent mIntent = this.getIntent();
@@ -58,7 +65,19 @@ public class FashionByMenuActivity extends AppCompatActivity implements View.OnC
         mRecycleProductByCate.setLayoutManager(mProductByCateLayout);
         mRecycleProductByCate.setHasFixedSize(true);
 
+        mProductByCateLayout = new GridLayoutManager(this, 2, LinearLayoutManager.HORIZONTAL, false);
+        mRecycleCateMenu.setLayoutManager(mProductByCateLayout);
+        mRecycleCateMenu.setHasFixedSize(true);
+
+        showSlideProduct();
+        LoadCateMenu(mIntent.getStringExtra("ID"));
         LoadProductByCateId(mIntent.getStringExtra("ID"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCompositeDisposable.dispose();
     }
 
     @Override
@@ -74,9 +93,9 @@ public class FashionByMenuActivity extends AppCompatActivity implements View.OnC
     }
 
     //Load product by cate id
-    private void LoadProductByCateId(String cate_id) {
+    private void LoadProductByCateId(String menu_id) {
 
-        mCompositeDisposable.add(mRetrofitService.getProductByCateId(cate_id)
+        mCompositeDisposable.add(mRetrofitService.getProductByMenuId(menu_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(product -> {
@@ -86,5 +105,41 @@ public class FashionByMenuActivity extends AppCompatActivity implements View.OnC
                     mProductByCateAdapter.notifyDataSetChanged();
                 })
         );
+    }
+
+    //Load category menu for
+    private void LoadCateMenu(String CateId) {
+
+        mCompositeDisposable.add(mRetrofitService.getCateMenu(CateId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(catemenu -> {
+                mCateMenuAdapter = new CateMenuAdapter(this, catemenu.getmListCateMenu());
+                mRecycleCateMenu.setAdapter(mCateMenuAdapter);
+                mCateMenuAdapter.notifyDataSetChanged();
+            }));
+    }
+
+    //Slide show product
+    public void showSlideProduct() {
+
+        int a[] = {R.drawable.slide_men1, R.drawable.slide_men2, R.drawable.slide_men3};
+        mIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
+        mOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_left);
+
+        for (int i = 0; i < a.length; i++) {
+
+            ImageView mImageSlide = new ImageView(this);
+            mImageSlide.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            mImageSlide.setImageResource(a[i]);
+
+            mViewFlipper.addView(mImageSlide);
+            mViewFlipper.startFlipping();
+            mViewFlipper.setInAnimation(mIn);
+            mViewFlipper.setOutAnimation(mOut);
+            mViewFlipper.setFlipInterval(3000);
+            mViewFlipper.setAutoStart(true);
+        }
     }
 }
