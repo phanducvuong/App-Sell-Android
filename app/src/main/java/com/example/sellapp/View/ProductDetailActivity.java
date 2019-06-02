@@ -72,6 +72,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     public void OnClick(View v) {
         Intent mIntent = new Intent(ProductDetailActivity.this, CommentActivity.class);
+        mIntent.putExtra("ProductId", mProductId);
         startActivity(mIntent);
     }
 
