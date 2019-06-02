@@ -3,6 +3,7 @@
     package="com.example.sellapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -10,9 +11,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".View.ProductByCateMenuActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".View.ProductDetailActivity"></activity>
+        <activity android:name=".View.ProductByCateMenuActivity" />
         <activity android:name=".View.FashionByMenuActivity" />
+        <activity android:name=".View.CommentActivity"
+            android:theme="@style/Base.Theme.MaterialComponents.Dialog"/>
         <activity
             android:name=".View.HelloScreenActivity"
             android:screenOrientation="portrait">

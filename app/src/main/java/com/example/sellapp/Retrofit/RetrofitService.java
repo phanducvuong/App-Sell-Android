@@ -4,12 +4,19 @@ import android.content.Intent;
 
 import com.example.sellapp.Model.CategoryMenuModel.CategoryMenu;
 import com.example.sellapp.Model.CategoryModel.Category;
+import com.example.sellapp.Model.CommentModel.Comment;
+import com.example.sellapp.Model.CommentModel.ListComment;
+import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.Model.ProductModel.Product;
+import com.example.sellapp.Model.ProductModel.ProductDetail;
 import com.example.sellapp.Model.SlideModel.Slide;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface RetrofitService {
@@ -40,4 +47,17 @@ public interface RetrofitService {
 
     @GET("san-pham-theo-danh-muc/{menu_id}")
     Observable<Product> getProductByMenuId(@Path("menu_id") String menu_id);
+
+    @GET("san-pham/{id}")
+    Observable<ProductDetail> getProductById(@Path("id") String id);
+
+    @POST("them-comment")
+    @FormUrlEncoded
+    Observable<ListComment> postComment(@Field("comment_id") String mCommentId,
+                                        @Field("product_id") String mProductId,
+                                        @Field("device_name") String mDeviceName,
+                                        @Field("title") String mTitle,
+                                        @Field("content") String mContent,
+                                        @Field("number_star") String mNumberStar,
+                                        @Field("date_comment") String mDateComment);
 }

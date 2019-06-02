@@ -11,5 +11,7 @@
     <string name="ban_chay">Bán Chạy</string>
     <string name="gia">Giá</string>
     <string name="moi_nhat">Mới Nhất</string>
+    <string name="comment">Đánh giá và nhận xét</string>
+    <string name="write_comment">Viết đánh giá</string>
 
 </resources>

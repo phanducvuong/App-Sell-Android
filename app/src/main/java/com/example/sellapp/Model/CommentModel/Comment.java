@@ -11,23 +11,11 @@ public class Comment {
     @Expose
     private List<ListComment> mComment = null;
 
-    @SerializedName("message")
-    @Expose
-    private String mMessage;
-
     public List<ListComment> getmComment() {
         return mComment;
     }
 
     public void setmComment(List<ListComment> mComment) {
         this.mComment = mComment;
-    }
-
-    public String getmMessage() {
-        return mMessage;
-    }
-
-    public void setmMessage(String mMessage) {
-        this.mMessage = mMessage;
     }
 }

@@ -116,7 +116,7 @@
                     android:paddingLeft="@dimen/_8sdp"
                     android:textSize="@dimen/_10sdp"
                     android:textStyle="italic"
-                    android:textColor="#BBBBBB"/>
+                    android:textColor="#BBBBBB" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycle_product_by_cate"

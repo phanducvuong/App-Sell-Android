@@ -11,17 +11,29 @@ public class ListComment {
     @Expose
     private String mId;
 
-    @SerializedName("employee_id")
+    @SerializedName("comment_id")
     @Expose
-    private ListEmployee mEmployee;
+    private String mCommentId;
 
     @SerializedName("product_id")
     @Expose
     private ListProduct mProduct;
 
+    @SerializedName("device_name")
+    @Expose
+    private String mDeviceName;
+
+    @SerializedName("title")
+    @Expose
+    private String mTitle;
+
     @SerializedName("content")
     @Expose
     private String mContent;
+
+    @SerializedName("number_star")
+    @Expose
+    private String mNumberStar;
 
     @SerializedName("date_comment")
     @Expose
@@ -35,12 +47,12 @@ public class ListComment {
         this.mId = mId;
     }
 
-    public ListEmployee getmEmployee() {
-        return mEmployee;
+    public String getmCommentId() {
+        return mCommentId;
     }
 
-    public void setmEmployee(ListEmployee mEmployee) {
-        this.mEmployee = mEmployee;
+    public void setmCommentId(String mCommentId) {
+        this.mCommentId = mCommentId;
     }
 
     public ListProduct getmProduct() {
@@ -51,12 +63,36 @@ public class ListComment {
         this.mProduct = mProduct;
     }
 
+    public String getmDeviceName() {
+        return mDeviceName;
+    }
+
+    public void setmDeviceName(String mDeviceName) {
+        this.mDeviceName = mDeviceName;
+    }
+
+    public String getmTitle() {
+        return mTitle;
+    }
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
     public String getmContent() {
         return mContent;
     }
 
     public void setmContent(String mContent) {
         this.mContent = mContent;
+    }
+
+    public String getmNumberStar() {
+        return mNumberStar;
+    }
+
+    public void setmNumberStar(String mNumberStar) {
+        this.mNumberStar = mNumberStar;
     }
 
     public String getmDateComment() {

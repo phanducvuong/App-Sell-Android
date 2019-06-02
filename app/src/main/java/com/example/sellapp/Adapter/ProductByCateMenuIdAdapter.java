@@ -1,6 +1,7 @@
 package com.example.sellapp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.example.sellapp.Config;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.R;
 import com.example.sellapp.Util.ItemClickListener;
+import com.example.sellapp.View.ProductDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -48,7 +50,12 @@ public class ProductByCateMenuIdAdapter extends RecyclerView.Adapter<ProductByCa
         mHolder.mTxtProductName.setText(mListProduct.get(i).getProductName());
         mHolder.mTxtProductPrice.setText(FortmartPrice(mListProduct.get(i).getProductPrice()));
 
-        mHolder.SetItemClickListener((v, position) -> Toast.makeText(mContext, mListProduct.get(position).getProductName(), Toast.LENGTH_SHORT).show());
+        mHolder.SetItemClickListener((v, position) -> {
+            Intent mIntent = new Intent(this.mContext, ProductDetailActivity.class);
+            mIntent.putExtra("ProductID", mListProduct.get(position).getId());
+            mIntent.putExtra("ProductName", mListProduct.get(position).getProductName());
+            this.mContext.startActivity(mIntent);
+        });
     }
 
     @Override
