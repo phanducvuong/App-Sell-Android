@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_10sdp">
+
+    <TextView
+        android:id="@+id/txt_title_commentR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="abc"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:textStyle="bold"
+        android:textSize="@dimen/_15sdp"/>
+
+    <RatingBar
+        android:id="@+id/rtb_commentR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        style="?ratingBarStyleSmall"/>
+
+    <TextView
+        android:id="@+id/txt_posted_commentR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/colorGray"
+        android:text="Duoc Dang boi"/>
+
+    <TextView
+        android:id="@+id/txt_content_commentR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/colorGray"
+        android:text="Duoc Dang boi"/>
+
+</LinearLayout>

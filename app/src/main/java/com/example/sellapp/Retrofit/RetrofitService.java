@@ -2,6 +2,7 @@ package com.example.sellapp.Retrofit;
 
 import com.example.sellapp.Model.CategoryMenuModel.CategoryMenu;
 import com.example.sellapp.Model.CategoryModel.Category;
+import com.example.sellapp.Model.CommentModel.Comment;
 import com.example.sellapp.Model.CommentModel.Message;
 import com.example.sellapp.Model.ProductModel.Product;
 import com.example.sellapp.Model.ProductModel.ProductDetail;
@@ -45,6 +46,9 @@ public interface RetrofitService {
 
     @GET("san-pham/{id}")
     Observable<ProductDetail> getProductById(@Path("id") String id);
+
+    @GET("comment/{id}")
+    Observable<Comment> getAllComment(@Path("id") String id);
 
     @POST("them-comment")
     @FormUrlEncoded

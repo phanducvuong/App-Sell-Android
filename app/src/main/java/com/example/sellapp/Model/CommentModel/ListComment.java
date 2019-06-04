@@ -15,10 +15,6 @@ public class ListComment {
     @Expose
     private String mCommentId;
 
-    @SerializedName("product_id")
-    @Expose
-    private ListProduct mProduct;
-
     @SerializedName("device_name")
     @Expose
     private String mDeviceName;
@@ -53,14 +49,6 @@ public class ListComment {
 
     public void setmCommentId(String mCommentId) {
         this.mCommentId = mCommentId;
-    }
-
-    public ListProduct getmProduct() {
-        return mProduct;
-    }
-
-    public void setmProduct(ListProduct mProduct) {
-        this.mProduct = mProduct;
     }
 
     public String getmDeviceName() {

@@ -3,6 +3,7 @@ package com.example.sellapp.View;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sellapp.Adapter.CommentAdapter;
 import com.example.sellapp.Config;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.Model.ProductModel.ProductDetail;
@@ -45,13 +47,16 @@ public class ProductDetailActivity extends AppCompatActivity {
     Button mBtnAddToCart;
     ImageView mImgProductImage;
     ImageButton mImageButtonExpend;
+    ImageButton mImageButtonBack;
 
     boolean flagImageExpend = true;
     String textDescription;
 
     String mProductId;
+    RecyclerView.LayoutManager mLayoutManager;
 
     RecyclerView mRcvComment;
+    CommentAdapter mCommentAdapter;
     RecyclerView mRcvProductOther;
 
     @Override
@@ -65,15 +70,45 @@ public class ProductDetailActivity extends AppCompatActivity {
         Intent CateMenuItent = this.getIntent();
         mProductId = CateMenuItent.getStringExtra("ProductID");
 
-        getProductById(mProductId);
-
         mTxtComment.setOnClickListener(this::OnClick);
+        mBtnCommentDetail.setOnClickListener(this::OnClick);
+        mImageButtonBack.setOnClickListener(this::OnClick);
+
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRcvComment.setLayoutManager(mLayoutManager);
+        mRcvComment.setHasFixedSize(true);
+
+        getProductById(mProductId);
+        GetAllProduct(mProductId);
+    }
+
+    private void GetAllProduct(String id) {
+        mCompositeDisposable.add(mRetrofitService.getAllComment(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(comment -> {
+                mCommentAdapter = new CommentAdapter(this, comment.getmComment(), false);
+                mRcvComment.setAdapter(mCommentAdapter);
+                mCommentAdapter.notifyDataSetChanged();
+            }));
     }
 
     public void OnClick(View v) {
-        Intent mIntent = new Intent(ProductDetailActivity.this, CommentActivity.class);
-        mIntent.putExtra("ProductId", mProductId);
-        startActivity(mIntent);
+        switch (v.getId()){
+            case R.id.txt_comment:
+                Intent mIntent = new Intent(ProductDetailActivity.this, CommentActivity.class);
+                mIntent.putExtra("ProductId", mProductId);
+                startActivity(mIntent);
+                break;
+            case R.id.btn_comment_detail:
+                Intent mIntentComment = new Intent(ProductDetailActivity.this, CommentDetailActivity.class);
+                mIntentComment.putExtra("ProductId", mProductId);
+                startActivity(mIntentComment);
+                break;
+            case R.id.img_btn_back:
+                this.finish();
+                break;
+        }
     }
 
     private void getProductById(String id) {
@@ -134,6 +169,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         mRcvProductOther = findViewById(R.id.rcv_product_other);
         mImgProductImage = findViewById(R.id.img_product_image);
         mImageButtonExpend = findViewById(R.id.img_btn_expande);
+        mImageButtonBack = findViewById(R.id.img_btn_back);
     }
 
     public String FormatPrice(Integer Price) {

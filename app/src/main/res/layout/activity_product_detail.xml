@@ -41,8 +41,10 @@
                 app:layout_collapseMode="pin">
 
                 <ImageButton
+                    android:id="@+id/img_btn_back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp"
                     android:layout_marginStart="@dimen/_1sdp"
                     android:background="@null"
                     android:src="@drawable/back"/>
@@ -110,7 +112,7 @@
                         android:id="@+id/txt_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_minus30sdp"
+                        android:layout_marginTop="@dimen/_minus25sdp"
                         android:text="0"
                         android:textSize="@dimen/_15sdp" />
 

@@ -18,6 +18,7 @@
         <activity android:name=".View.FashionByMenuActivity" />
         <activity android:name=".View.CommentActivity"
             android:theme="@style/Base.Theme.MaterialComponents.Dialog"/>
+        <activity android:name=".View.CommentDetailActivity"/>
         <activity
             android:name=".View.HelloScreenActivity"
             android:screenOrientation="portrait">
