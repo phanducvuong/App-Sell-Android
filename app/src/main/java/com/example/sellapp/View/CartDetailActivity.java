@@ -1,85 +1,85 @@
-package com.example.sellapp.View.Fragment;
+package com.example.sellapp.View;
 
-
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sellapp.Adapter.CartDetailAdapter;
 import com.example.sellapp.Model.CartModel.Connect;
+import com.example.sellapp.Model.CartModel.ProductDatabase;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.R;
+import com.example.sellapp.Util.OnCheckChange;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class CartFragment extends Fragment {
+import okhttp3.internal.Util;
+
+public class CartDetailActivity extends AppCompatActivity {
 
     Connect mDatabaseConnect;
     RecyclerView mRcvCartDetail;
     CartDetailAdapter mCartDetailAdapter;
     RecyclerView.LayoutManager mLayoutManager;
-    CheckBox CbItemCart;
+    ImageView mImgBackCartDetail;
+    CheckBox mCbAll;
     TextView mTxtTotalPrice;
     Button mBtnBuyNow;
     int mTotalPrice = 0;
 
-    public CartFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_cart, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_cart_detail);
 
-        mRcvCartDetail = v.findViewById(R.id.rcv_cart_detail);
-        CbItemCart = v.findViewById(R.id.cb_choose_all_cart_detail);
-        mTxtTotalPrice = v.findViewById(R.id.txt_total_price_cart_detail);
-        mBtnBuyNow = v.findViewById(R.id.btn_buy_now_cart_detail);
+        mRcvCartDetail = findViewById(R.id.rcv_cart_detail);
+        mImgBackCartDetail = findViewById(R.id.img_btn_back_cart_detail);
+        mCbAll = findViewById(R.id.cb_choose_all_cart_detail);
+        mTxtTotalPrice = findViewById(R.id.txt_total_price_cart_detail);
+        mBtnBuyNow = findViewById(R.id.btn_buy_now_cart_detail);
 
         mDatabaseConnect = new Connect();
 
-        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRcvCartDetail.setLayoutManager(mLayoutManager);
         mRcvCartDetail.setHasFixedSize(true);
 
-        GetCartDetail();
-
-        CbItemCart.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        mImgBackCartDetail.setOnClickListener(this::OnClick);
+        mCbAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 this.mTotalPrice = 0;
-                mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), true, this.mTotalPrice);
+                mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, true, this.mTotalPrice);
                 mCartDetailAdapter.setOnCheckChange(this::CheckChange);
                 mRcvCartDetail.setAdapter(mCartDetailAdapter);
                 mCartDetailAdapter.notifyDataSetChanged();
             }else {
                 this.mTotalPrice = 0;
-                mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), false, this.mTotalPrice);
+                mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, false, this.mTotalPrice);
                 mCartDetailAdapter.setOnCheckChange(this::CheckChange);
                 mRcvCartDetail.setAdapter(mCartDetailAdapter);
                 mCartDetailAdapter.notifyDataSetChanged();
             }
         });
 
-        return v;
+        GetCartDetail();
+    }
+
+    private void OnClick(View v) {
+        finish();
     }
 
     private void GetCartDetail() {
-        mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), false, this.mTotalPrice);
+        mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, false, this.mTotalPrice);
         mCartDetailAdapter.setOnCheckChange(this::CheckChange);
         mRcvCartDetail.setAdapter(mCartDetailAdapter);
         mCartDetailAdapter.notifyDataSetChanged();
@@ -87,28 +87,26 @@ public class CartFragment extends Fragment {
 
     /////////////////////////////////////////////////////////////////////////////
     private List<ListProduct> getListCart() {
-        mDatabaseConnect.Connection(getContext());
+        mDatabaseConnect.Connection(this);
         return mDatabaseConnect.GetProductInCart();
     }
 
     //Callback in adapter
     public void CheckChange(boolean temp, int total_price) {
+        Log.d("BBB", "CheckChange: " + total_price);
         mTxtTotalPrice.setText(FortmartPrice(total_price));
         isCheckBuyNow(total_price);
         if (temp)
-        {
-            CbItemCart.setChecked(true);
-        }
-        else{
-            CbItemCart.setChecked(false);
-        }
+            mCbAll.setChecked(true);
+        else
+            mCbAll.setChecked(false);
     }
 
     private void isCheckBuyNow(int total_price) {
         if (total_price > 0)
-            mBtnBuyNow.setBackground(getActivity().getDrawable(R.color.colorRedOrange));
+            mBtnBuyNow.setBackground(getDrawable(R.color.colorRedOrange));
         else
-            mBtnBuyNow.setBackground(getActivity().getDrawable(R.color.colorGray));
+            mBtnBuyNow.setBackground(getDrawable(R.color.colorGray));
     }
 
     //FORTMART PRICE

@@ -45,8 +45,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public int getItemCount() {
         if (isCheck) {
             return mListComment.size();
-        }
-        return 3;
+        } else if (mListComment.size() > 0) {
+            return 3;
+        }else return mListComment.size();
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

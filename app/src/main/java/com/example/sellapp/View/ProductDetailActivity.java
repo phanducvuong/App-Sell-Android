@@ -1,6 +1,8 @@
 package com.example.sellapp.View;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.sellapp.Adapter.CommentAdapter;
 import com.example.sellapp.Config;
+import com.example.sellapp.Model.CartModel.Connect;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.Model.ProductModel.ProductDetail;
 import com.example.sellapp.R;
@@ -23,6 +26,7 @@ import com.example.sellapp.Retrofit.RetrofitClient;
 import com.example.sellapp.Retrofit.RetrofitService;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -39,6 +43,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     TextView mTxtProductName;
     TextView mTxtProductPrice;
     TextView mTxtComment;
+    TextView mTxtCardHeader;
     RatingBar mRatingBar;
     TextView mTxtRating;
     TextView mTxtProductDescription;
@@ -46,10 +51,12 @@ public class ProductDetailActivity extends AppCompatActivity {
     Button mBtnBuyNow;
     Button mBtnAddToCart;
     ImageView mImgProductImage;
+    ImageView mImgCartHeader;
     ImageButton mImageButtonExpend;
     ImageButton mImageButtonBack;
 
     boolean flagImageExpend = true;
+    boolean countCart = false;
     String textDescription;
 
     String mProductId;
@@ -59,6 +66,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     CommentAdapter mCommentAdapter;
     RecyclerView mRcvProductOther;
 
+    Connect mConnectToDatabase;
+    ListProduct mProductCart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +76,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         bindView();
         createRetrofit();
+        mConnectToDatabase = new Connect();
 
         Intent CateMenuItent = this.getIntent();
         mProductId = CateMenuItent.getStringExtra("ProductID");
@@ -73,10 +84,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         mTxtComment.setOnClickListener(this::OnClick);
         mBtnCommentDetail.setOnClickListener(this::OnClick);
         mImageButtonBack.setOnClickListener(this::OnClick);
+        mBtnAddToCart.setOnClickListener(this::OnClick);
+        mImgCartHeader.setOnClickListener(this::OnClick);
 
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRcvComment.setLayoutManager(mLayoutManager);
         mRcvComment.setHasFixedSize(true);
+
+        mTxtCardHeader.setText(String.valueOf(getItemCart()));
 
         getProductById(mProductId);
         GetAllProduct(mProductId);
@@ -108,7 +123,53 @@ public class ProductDetailActivity extends AppCompatActivity {
             case R.id.img_btn_back:
                 this.finish();
                 break;
+
+            case R.id.btn_add_to_cart:
+                ImageView imageView = findViewById(R.id.img_product_image);
+                Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+
+                //convert bitmap to byte
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] image_cart = byteArrayOutputStream.toByteArray();
+                mProductCart.setImage(image_cart);
+                AddToCart(mProductCart);
+
+                mTxtCardHeader.setText(String.valueOf(getItemCart()));
+                break;
+
+            case R.id.img_cart_header:
+                Intent intent = new Intent(ProductDetailActivity.this, CartDetailActivity.class);
+                startActivity(intent);
+                break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        countCart = true;
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (countCart) mTxtCardHeader.setText(String.valueOf(getItemCart()));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void AddToCart(ListProduct product) {
+        mConnectToDatabase.Connection(this);
+        boolean check = mConnectToDatabase.AddToCart(product);
+
+        if (check) Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(this, "Fail", Toast.LENGTH_SHORT).show();
+    }
+
+    private int getItemCart() {
+        mConnectToDatabase.Connection(this);
+        return mConnectToDatabase.GetProductInCart().size();
     }
 
     private void getProductById(String id) {
@@ -119,6 +180,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void bindViewByProduct(ProductDetail product) {
+        mProductCart = product.getProductById();
+
         mTxtProductName.setText(product.getProductById().getProductName());
         mTxtProductPrice.setText(FormatPrice(product.getProductById().getProductPrice()) + " VND");
         mTxtRating.setText(String.valueOf(mRatingBar.getRating()));
@@ -170,6 +233,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         mImgProductImage = findViewById(R.id.img_product_image);
         mImageButtonExpend = findViewById(R.id.img_btn_expande);
         mImageButtonBack = findViewById(R.id.img_btn_back);
+        mTxtCardHeader = findViewById(R.id.txt_cart_header);
+        mImgCartHeader = findViewById(R.id.img_cart_header);
     }
 
     public String FormatPrice(Integer Price) {

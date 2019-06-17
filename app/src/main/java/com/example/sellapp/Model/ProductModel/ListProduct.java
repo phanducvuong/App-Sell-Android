@@ -41,6 +41,16 @@ public class ListProduct {
     @Expose
     private MenuId menuId;
 
+    private byte[] image;
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
     public MenuId getMenuId() {
         return menuId;
     }

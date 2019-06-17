@@ -22,8 +22,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="@dimen/_10sdp">
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/img_btn_back_cart_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_1sdp"
+                    android:background="@null"
+                    android:src="@drawable/back"/>
 
                 <TextView
                     android:layout_width="wrap_content"

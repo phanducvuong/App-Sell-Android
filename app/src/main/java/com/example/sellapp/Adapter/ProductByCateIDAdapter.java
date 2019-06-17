@@ -83,8 +83,6 @@ public class ProductByCateIDAdapter extends RecyclerView.Adapter<ProductByCateID
         public void onClick(View v) {
             this.mItemClickListener.onClick(v, getAdapterPosition());
         }
-
-
     }
 
     //FORTMART PRICE

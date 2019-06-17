@@ -3,7 +3,7 @@
     package="com.example.sellapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -13,12 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".View.ProductDetailActivity"></activity>
+        <activity android:name=".View.CartDetailActivity"></activity>
+        <activity android:name=".View.ProductDetailActivity" />
         <activity android:name=".View.ProductByCateMenuActivity" />
         <activity android:name=".View.FashionByMenuActivity" />
-        <activity android:name=".View.CommentActivity"
-            android:theme="@style/Base.Theme.MaterialComponents.Dialog"/>
-        <activity android:name=".View.CommentDetailActivity"/>
+        <activity
+            android:name=".View.CommentActivity"
+            android:theme="@style/Base.Theme.MaterialComponents.Dialog" />
+        <activity android:name=".View.CommentDetailActivity" />
         <activity
             android:name=".View.HelloScreenActivity"
             android:screenOrientation="portrait">
