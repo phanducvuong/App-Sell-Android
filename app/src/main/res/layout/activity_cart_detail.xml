@@ -65,18 +65,27 @@
         android:orientation="horizontal"
         android:padding="@dimen/_5sdp">
 
-        <CheckBox
-            android:id="@+id/cb_choose_all_cart_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Chọn tất cả"
-            android:textSize="@dimen/_11sdp" />
+        <ImageButton
+            android:id="@+id/img_all_cart_detail"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:src="@drawable/icon_uncheck_cart"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:textSize="@dimen/_11sdp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tổng tiền: "
+            android:paddingLeft="@dimen/_5sdp"
+            android:textColor="#000"
+            android:text="Chọn tất cả"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_price"
+            android:paddingLeft="@dimen/_20sdp"
             android:textColor="#000"
             android:textSize="@dimen/_11sdp" />
 

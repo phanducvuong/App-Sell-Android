@@ -27,6 +27,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
+@SuppressWarnings("deprecation")
 public class CommentActivity extends AppCompatActivity {
 
     TextInputLayout mInputTitle, mInputContent;

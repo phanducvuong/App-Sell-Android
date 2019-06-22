@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".View.CartDetailActivity"></activity>
+        <activity android:name=".View.PaymentActivity"></activity>
+        <activity android:name=".View.CartDetailActivity" />
         <activity android:name=".View.ProductDetailActivity" />
         <activity android:name=".View.ProductByCateMenuActivity" />
         <activity android:name=".View.FashionByMenuActivity" />

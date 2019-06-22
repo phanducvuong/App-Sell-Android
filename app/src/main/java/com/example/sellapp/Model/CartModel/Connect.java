@@ -15,6 +15,7 @@ import java.util.List;
 public class Connect {
 
     SQLiteDatabase database;
+    int mAmount;
 
     public void Connection(Context context) {
         ProductDatabase productDatabase = new ProductDatabase(context);
@@ -29,8 +30,18 @@ public class Connect {
         contentValues.put(ProductDatabase.CART_PRODUCT_PRICE, product.getProductPrice());
         contentValues.put(ProductDatabase.CART_PRODUCT_IMAGE, product.getImage());
 
-        long id = database.insert(ProductDatabase.TB_CART, null, contentValues);
-        if (id > 0) return true;
+        boolean check = CheckCartId(product.getId());
+
+        if (check) {
+            contentValues.put(ProductDatabase.CART_PRODUCT_AMOUNT, 1);
+            long id = database.insert(ProductDatabase.TB_CART, null, contentValues);
+            if (id > 0) return true;
+        }
+        mAmount++;
+        contentValues.put(ProductDatabase.CART_PRODUCT_AMOUNT, mAmount);
+        long _id = database.update(ProductDatabase.TB_CART, contentValues, ProductDatabase.CART_PRODUCT_ID + "=" + "'" + product.getId() + "'", null);
+        if (_id > 0)
+            return true;
         return false;
     }
 
@@ -45,23 +56,45 @@ public class Connect {
             String product_id = cursor.getString(cursor.getColumnIndex(ProductDatabase.CART_PRODUCT_ID));
             String product_name = cursor.getString(cursor.getColumnIndex(ProductDatabase.CART_PRODUCT_NAME));
             int product_price = cursor.getInt(cursor.getColumnIndex(ProductDatabase.CART_PRODUCT_PRICE));
+            int product_amount = cursor.getInt(cursor.getColumnIndex(ProductDatabase.CART_PRODUCT_AMOUNT));
             byte[] image = cursor.getBlob(cursor.getColumnIndex(ProductDatabase.CART_PRODUCT_IMAGE));
 
             ListProduct product = new ListProduct();
             product.setId(product_id);
             product.setProductName(product_name);
             product.setProductPrice(product_price);
+            product.setAmount(product_amount);
             product.setImage(image);
 
             listProducts.add(product);
             cursor.moveToNext();
         }
-
         return listProducts;
     }
 
     public boolean DeleteItemCart(String product_id) {
         int check = database.delete(ProductDatabase.TB_CART, ProductDatabase.CART_PRODUCT_ID + " = " + "'" + product_id + "'", null);
         return check > 0;
+    }
+
+    public boolean CheckCartId(String id) {
+        String query = "SELECT * FROM " + ProductDatabase.TB_CART + " WHERE " + ProductDatabase.CART_PRODUCT_ID + " = " + "'" + id + "'";
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (cursor.getCount() == 0)
+            return true;
+        mAmount = cursor.getInt(cursor.getColumnIndex(ProductDatabase.CART_PRODUCT_AMOUNT));
+        return false;
+    }
+
+    public void updateAmountInCart(String product_id, int amount) {
+        String query = "SELECT * FROM " + ProductDatabase.TB_CART + " WHERE " + ProductDatabase.CART_PRODUCT_ID + " = " + "'" + product_id + "'";
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(ProductDatabase.CART_PRODUCT_AMOUNT, amount);
+            database.update(ProductDatabase.TB_CART, contentValues, ProductDatabase.CART_PRODUCT_ID + "=" + "'" + product_id + "'", null);
+        }
     }
 }

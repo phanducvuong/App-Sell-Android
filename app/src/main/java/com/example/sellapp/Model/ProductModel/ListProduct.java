@@ -43,6 +43,16 @@ public class ListProduct {
 
     private byte[] image;
 
+    private int amount;
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     public byte[] getImage() {
         return image;
     }

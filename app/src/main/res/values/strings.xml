@@ -13,5 +13,6 @@
     <string name="moi_nhat">Mới Nhất</string>
     <string name="comment">Đánh giá và nhận xét</string>
     <string name="write_comment">Viết đánh giá</string>
+    <string name="total_price">Tổng tiền:</string>
 
 </resources>

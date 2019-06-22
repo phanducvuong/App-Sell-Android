@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,10 +33,11 @@ public class CartDetailActivity extends AppCompatActivity {
     CartDetailAdapter mCartDetailAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     ImageView mImgBackCartDetail;
-    CheckBox mCbAll;
+    ImageButton mImgBtnCartDetail;
     TextView mTxtTotalPrice;
     Button mBtnBuyNow;
     int mTotalPrice = 0;
+    boolean isCheckAll = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +46,11 @@ public class CartDetailActivity extends AppCompatActivity {
 
         mRcvCartDetail = findViewById(R.id.rcv_cart_detail);
         mImgBackCartDetail = findViewById(R.id.img_btn_back_cart_detail);
-        mCbAll = findViewById(R.id.cb_choose_all_cart_detail);
+        mImgBtnCartDetail = findViewById(R.id.img_all_cart_detail);
         mTxtTotalPrice = findViewById(R.id.txt_total_price_cart_detail);
         mBtnBuyNow = findViewById(R.id.btn_buy_now_cart_detail);
+
+        mTxtTotalPrice.setText("0");
 
         mDatabaseConnect = new Connect();
 
@@ -55,31 +59,38 @@ public class CartDetailActivity extends AppCompatActivity {
         mRcvCartDetail.setHasFixedSize(true);
 
         mImgBackCartDetail.setOnClickListener(this::OnClick);
-        mCbAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                this.mTotalPrice = 0;
-                mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, true, this.mTotalPrice);
-                mCartDetailAdapter.setOnCheckChange(this::CheckChange);
-                mRcvCartDetail.setAdapter(mCartDetailAdapter);
-                mCartDetailAdapter.notifyDataSetChanged();
-            }else {
-                this.mTotalPrice = 0;
-                mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, false, this.mTotalPrice);
-                mCartDetailAdapter.setOnCheckChange(this::CheckChange);
-                mRcvCartDetail.setAdapter(mCartDetailAdapter);
-                mCartDetailAdapter.notifyDataSetChanged();
-            }
-        });
+        mImgBtnCartDetail.setOnClickListener(this::OnClick);
 
         GetCartDetail();
     }
 
     private void OnClick(View v) {
-        finish();
+        switch (v.getId()) {
+            case R.id.img_btn_back_cart_detail:
+                finish();
+                break;
+            case R.id.img_all_cart_detail:
+                if (isCheckAll) {
+                    mImgBtnCartDetail.setImageResource(R.drawable.icon_uncheck_cart);
+                    mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, false, 0, mDatabaseConnect);
+                    mCartDetailAdapter.setOnCheckChange(this::CheckChange);
+                    mRcvCartDetail.setAdapter(mCartDetailAdapter);
+                    mCartDetailAdapter.notifyDataSetChanged();
+                    isCheckAll = false;
+                }else {
+                    mImgBtnCartDetail.setImageResource(R.drawable.icon_check_cart);
+                    mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, true, 0, mDatabaseConnect);
+                    mCartDetailAdapter.setOnCheckChange(this::CheckChange);
+                    mRcvCartDetail.setAdapter(mCartDetailAdapter);
+                    mCartDetailAdapter.notifyDataSetChanged();
+                    isCheckAll = true;
+                }
+                break;
+        }
     }
 
     private void GetCartDetail() {
-        mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, false, this.mTotalPrice);
+        mCartDetailAdapter = new CartDetailAdapter(getListCart(), this, false, this.mTotalPrice, mDatabaseConnect);
         mCartDetailAdapter.setOnCheckChange(this::CheckChange);
         mRcvCartDetail.setAdapter(mCartDetailAdapter);
         mCartDetailAdapter.notifyDataSetChanged();
@@ -93,13 +104,14 @@ public class CartDetailActivity extends AppCompatActivity {
 
     //Callback in adapter
     public void CheckChange(boolean temp, int total_price) {
-        Log.d("BBB", "CheckChange: " + total_price);
         mTxtTotalPrice.setText(FortmartPrice(total_price));
+        this.mTotalPrice = total_price;
+        isCheckAll = temp;
         isCheckBuyNow(total_price);
         if (temp)
-            mCbAll.setChecked(true);
+            mImgBtnCartDetail.setImageResource(R.drawable.icon_check_cart);
         else
-            mCbAll.setChecked(false);
+            mImgBtnCartDetail.setImageResource(R.drawable.icon_uncheck_cart);
     }
 
     private void isCheckBuyNow(int total_price) {

@@ -1,5 +1,6 @@
 package com.example.sellapp.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,18 +34,20 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
     private Context mContext;
     private OnCheckChange mCheckChange;
     private boolean isCheckAll;
-    private int count = 0, countTemp = 0;
+    private int count = 0;
     private int mTotalPrice;
+    private Connect db;
 
     public void setOnCheckChange(OnCheckChange checkChange) {
         this.mCheckChange = checkChange;
     }
 
-    public CartDetailAdapter(List<ListProduct> ListCartDetail, Context Context, boolean isCheck, int total_price) {
+    public CartDetailAdapter(List<ListProduct> ListCartDetail, Context Context, boolean isCheck, int total_price, Connect _db) {
         this.mListCartDetail = ListCartDetail;
         this.mContext = Context;
         this.isCheckAll = isCheck;
         this.mTotalPrice = total_price;
+        this.db = _db;
     }
 
     @NonNull
@@ -54,6 +57,7 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
         return new ViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         ListProduct product = mListCartDetail.get(i);
@@ -66,71 +70,103 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
         holder.mImgCart.setImageBitmap(imgItemCart);
         holder.mImgRemoveCart.setTag(product.getId());
         holder.mCbCart.setTag(product.getId());
+        holder.mTxtAmount.setText(String.valueOf(product.getAmount()));
+        holder.mImgIconMinus.setTag(product.getId());
+        holder.mImgIconPlus.setTag(product.getId());
 
-        if (isCheckAll) {
+        if (isCheckAll){
+            this.count++;
             holder.mCbCart.setChecked(true);
-            this.countTemp++;
-            this.mTotalPrice += Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+            int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+            int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
+            this.mTotalPrice += (tempPrice * tempAmount);
+            if (this.count == mListCartDetail.size())
+                mCheckChange.CheckChange(true, this.mTotalPrice);
         }
         else {
+            this.mTotalPrice = 0;
             holder.mCbCart.setChecked(false);
-            this.countTemp++;
-        }
-
-        if (this.countTemp == mListCartDetail.size()){
-            if (isCheckAll)
-                this.mCheckChange.CheckChange(true, this.mTotalPrice);
-            else
-                this.mCheckChange.CheckChange(false, this.mTotalPrice);
+            mCheckChange.CheckChange(false, this.mTotalPrice);
         }
 
         holder.mImgRemoveCart.setOnClickListener(v -> {
-            Connect database = new Connect();
-            database.Connection(mContext);
-            showDialog(v.getTag().toString(), database, i, holder.mCbCart);
+            showDialog(v.getTag().toString(), db, i, holder.mCbCart, holder.mTxtAmount);
         });
 
         holder.mCbCart.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 this.count++;
-                this.mTotalPrice += Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+                int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+                int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
+                this.mTotalPrice += (tempPrice * tempAmount);
                 if (this.count == mListCartDetail.size())
                     mCheckChange.CheckChange(true, this.mTotalPrice);
                 else mCheckChange.CheckChange(false, this.mTotalPrice);
             }
             else {
-                this.mTotalPrice -= Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+                int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+                int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
+                this.mTotalPrice -= (tempPrice * tempAmount);
                 mCheckChange.CheckChange(false, this.mTotalPrice);
                 this.count--;
             }
         });
+
+        holder.mImgIconMinus.setOnClickListener(v -> {
+            int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
+            int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+            tempAmount--;
+            if (tempAmount > 0 ){
+                holder.mTxtAmount.setText(String.valueOf(tempAmount));
+                if (holder.mCbCart.isChecked()) {
+                    this.mTotalPrice -= tempPrice;
+                    if (this.count == mListCartDetail.size())
+                        mCheckChange.CheckChange(true, this.mTotalPrice);
+                    else mCheckChange.CheckChange(false, this.mTotalPrice);
+                }else mCheckChange.CheckChange(false, this.mTotalPrice);
+                db.Connection(mContext);
+                db.updateAmountInCart(holder.mImgIconMinus.getTag().toString(), tempAmount);
+            }
+        });
+        holder.mImgIconPlus.setOnClickListener(v -> {
+            int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
+            int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
+            tempAmount++;
+            holder.mTxtAmount.setText(String.valueOf(tempAmount));
+            if (holder.mCbCart.isChecked()) {
+                this.mTotalPrice += tempPrice;
+                if (this.count == mListCartDetail.size())
+                    mCheckChange.CheckChange(true, this.mTotalPrice);
+                else mCheckChange.CheckChange(false, this.mTotalPrice);
+            } else mCheckChange.CheckChange(false, this.mTotalPrice);
+            db.updateAmountInCart(holder.mImgIconPlus.getTag().toString(), tempAmount);
+        });
     }
 
-    private void showDialog(String product_id, Connect db, int position, CheckBox cb) {
+    private void showDialog(String product_id, Connect db, int position, CheckBox cb, TextView txt_amount) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Xóa Sản Phẩm");
         builder.setMessage("Bạn có chắc muốn xóa sản phẩm này không?");
 
         builder.setPositiveButton("OK", (dialogInterface, i) -> {
-            boolean check = db.DeleteItemCart(product_id);
-            if (check) {
-                if (cb.isChecked()) {
-                    Log.d("BBB", this.mTotalPrice + "\n");
-                    this.mTotalPrice -= mListCartDetail.get(position).getProductPrice();
-                    Log.d("BBB", this.mTotalPrice + "\n");
-                    mListCartDetail.remove(position);
-                    this.count--;
-                    if (this.count == mListCartDetail.size())
-                        this.mCheckChange.CheckChange(true, this.mTotalPrice);
-                    else
-                        this.mCheckChange.CheckChange(false, this.mTotalPrice);
-                }else {
-                    mListCartDetail.remove(position);
-                    if (this.count == mListCartDetail.size())
-                        this.mCheckChange.CheckChange(true, this.mTotalPrice);
+            if (cb.isChecked()) {
+                int tempPrice = mListCartDetail.get(position).getProductPrice();
+                int tempAmount = Integer.valueOf(txt_amount.getText().toString());
+                this.mTotalPrice -= (tempPrice * tempAmount);
+                if (this.count == mListCartDetail.size()) {
+                    this.count = mListCartDetail.size() - 1;
+                    mCheckChange.CheckChange(true, this.mTotalPrice);
                 }
-                notifyDataSetChanged();
+                else mCheckChange.CheckChange(false, this.mTotalPrice);
+                mListCartDetail.remove(position);
+                this.count--;
+            }else {
+                mListCartDetail.remove(position);
+                if (this.count == mListCartDetail.size()) mCheckChange.CheckChange(true, this.mTotalPrice);
+                else mCheckChange.CheckChange(false, this.mTotalPrice);
             }
+            notifyItemRemoved(position);
+            db.DeleteItemCart(product_id);
         });
         builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
         AlertDialog dialog = builder.create();
@@ -146,8 +182,9 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
 
         CheckBox mCbCart;
         ImageView mImgCart;
-        TextView mTxtNameItemCart, mTxtPriceCart;
+        TextView mTxtNameItemCart, mTxtPriceCart, mTxtAmount;
         ImageView mImgRemoveCart;
+        ImageView mImgIconMinus, mImgIconPlus;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -156,6 +193,9 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
             mTxtNameItemCart = itemView.findViewById(R.id.txt_item_cart);
             mTxtPriceCart = itemView.findViewById(R.id.txt_price_item_cart);
             mImgRemoveCart = itemView.findViewById(R.id.img_remove_item_cart);
+            mTxtAmount = itemView.findViewById(R.id.txt_amount_cart_detail);
+            mImgIconMinus = itemView.findViewById(R.id.img_minus_cart_detail);
+            mImgIconPlus = itemView.findViewById(R.id.img_plus_cart_detail);
         }
     }
 
