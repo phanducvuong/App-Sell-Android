@@ -19,6 +19,9 @@ public class ProductDatabase extends SQLiteOpenHelper {
     public static String FAVORITE_PRODUCT_PRICE = "PRICE";
     public static String FAVORITE_PRODUCT_IMAGE = "IMAGE";
 
+    public static String TB_ORDER = "TBORDER";
+    public static String ORDER_ID = "ID";
+
     public ProductDatabase(Context context) {
         super(context, "SQLPRODUCT", null, 1);
     }
@@ -31,8 +34,11 @@ public class ProductDatabase extends SQLiteOpenHelper {
         String tbFavorite = "CREATE TABLE " + TB_FAVORITE + " (" + FAVORITE_PRODUCT_ID + " STRING PRIMARY KEY, " +
                 FAVORITE_PRODUCT_NAME + " TEXT, " + FAVORITE_PRODUCT_PRICE + " REAL, " + FAVORITE_PRODUCT_IMAGE + " BLOB);";
 
+        String tbOrder = "CREATE TABLE " + TB_ORDER + " (" + ORDER_ID + " STRING PRIMARY KEY);";
+
         db.execSQL(tbCart);
         db.execSQL(tbFavorite);
+        db.execSQL(tbOrder);
     }
 
     @Override

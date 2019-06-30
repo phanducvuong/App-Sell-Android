@@ -2,18 +2,17 @@ package com.example.sellapp.Model.OrderModel;
 
 import com.example.sellapp.Model.EmployeeModel.ListEmployee;
 import com.example.sellapp.Model.ProductModel.ListProduct;
+import com.example.sellapp.Model.ProductModel.Product;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class ListOrder {
 
     @SerializedName("employee_id")
     @Expose
     private ListEmployee mEmployeeId;
-
-    @SerializedName("product_id")
-    @Expose
-    private ListProduct mProduct;
 
     @SerializedName("status")
     @Expose
@@ -31,13 +30,51 @@ public class ListOrder {
     @Expose
     private String mDeliveryDate;
 
-    @SerializedName("quantity")
-    @Expose
-    private Integer mQuantity;
-
     @SerializedName("description")
     @Expose
     private String mDescription;
+
+    @SerializedName("phone_number")
+    @Expose
+    private String mPhoneNumber;
+
+    private List<ProductOrder> mListProductOrder;
+
+    private String mReceiver;
+
+    private String mNote;
+
+    public String getmNote() {
+        return mNote;
+    }
+
+    public void setmNote(String mNote) {
+        this.mNote = mNote;
+    }
+
+    public String getmReceiver() {
+        return mReceiver;
+    }
+
+    public void setmReceiver(String mReceiver) {
+        this.mReceiver = mReceiver;
+    }
+
+    public List<ProductOrder> getmListProductOrder() {
+        return mListProductOrder;
+    }
+
+    public void setmListProductOrder(List<ProductOrder> mListProductOrder) {
+        this.mListProductOrder = mListProductOrder;
+    }
+
+    public String getmPhoneNumber() {
+        return mPhoneNumber;
+    }
+
+    public void setmPhoneNumber(String mPhoneNumber) {
+        this.mPhoneNumber = mPhoneNumber;
+    }
 
     public ListEmployee getmEmployeeId() {
         return mEmployeeId;
@@ -45,14 +82,6 @@ public class ListOrder {
 
     public void setmEmployeeId(ListEmployee mEmployeeId) {
         this.mEmployeeId = mEmployeeId;
-    }
-
-    public ListProduct getmProduct() {
-        return mProduct;
-    }
-
-    public void setmProduct(ListProduct mProduct) {
-        this.mProduct = mProduct;
     }
 
     public Boolean getmStatus() {
@@ -85,14 +114,6 @@ public class ListOrder {
 
     public void setmDeliveryDate(String mDeliveryDate) {
         this.mDeliveryDate = mDeliveryDate;
-    }
-
-    public Integer getmQuantity() {
-        return mQuantity;
-    }
-
-    public void setmQuantity(Integer mQuantity) {
-        this.mQuantity = mQuantity;
     }
 
     public String getmDescription() {

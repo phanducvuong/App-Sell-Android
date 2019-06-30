@@ -3,7 +3,13 @@ package com.example.sellapp.Model.PromoModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ListPromotion {
+
+    @SerializedName("_id")
+    @Expose
+    private String mId;
 
     @SerializedName("name")
     @Expose
@@ -17,9 +23,29 @@ public class ListPromotion {
     @Expose
     private String mDateEnd;
 
-    @SerializedName("precent")
+    @SerializedName("percent")
     @Expose
     private Integer mPrecent;
+
+    @SerializedName("product_id")
+    @Expose
+    private List<ListProductPromo> mListProductPromo;
+
+    public List<ListProductPromo> getmListProductPromo() {
+        return mListProductPromo;
+    }
+
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
+    }
+
+    public void setmListProductPromo(List<ListProductPromo> mListProductPromo) {
+        this.mListProductPromo = mListProductPromo;
+    }
 
     public String getmName() {
         return mName;

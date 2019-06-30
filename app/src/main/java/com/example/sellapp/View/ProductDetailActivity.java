@@ -3,6 +3,7 @@ package com.example.sellapp.View;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.sellapp.Adapter.CommentAdapter;
 import com.example.sellapp.Config;
 import com.example.sellapp.Model.CartModel.Connect;
+import com.example.sellapp.Model.OrderModel.ProductOrder;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.Model.ProductModel.ProductDetail;
 import com.example.sellapp.R;
@@ -28,6 +30,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -60,6 +64,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     String textDescription;
 
     String mProductId;
+    int mPercent = 0;
     RecyclerView.LayoutManager mLayoutManager;
 
     RecyclerView mRcvComment;
@@ -68,6 +73,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     Connect mConnectToDatabase;
     ListProduct mProductCart;
+    private List<ProductOrder> listProductOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +86,15 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         Intent CateMenuItent = this.getIntent();
         mProductId = CateMenuItent.getStringExtra("ProductID");
+        if (CateMenuItent.getStringExtra("Percent") != null)
+            mPercent = Integer.valueOf(CateMenuItent.getStringExtra("Percent"));
 
         mTxtComment.setOnClickListener(this::OnClick);
         mBtnCommentDetail.setOnClickListener(this::OnClick);
         mImageButtonBack.setOnClickListener(this::OnClick);
         mBtnAddToCart.setOnClickListener(this::OnClick);
         mImgCartHeader.setOnClickListener(this::OnClick);
+        mBtnBuyNow.setOnClickListener(this::OnClick);
 
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRcvComment.setLayoutManager(mLayoutManager);
@@ -142,6 +151,16 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProductDetailActivity.this, CartDetailActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.btn_buy_now:
+                Intent intentBuyNow = new Intent(ProductDetailActivity.this, PaymentActivity.class);
+                this.listProductOrder = new ArrayList<>();
+                ProductOrder tempProductOrder = new ProductOrder();
+                tempProductOrder.setmProductId(mProductId);
+                tempProductOrder.setmAmount(1);
+                tempProductOrder.setmPercent(mPercent);
+                this.listProductOrder.add(tempProductOrder);
+                intentBuyNow.putParcelableArrayListExtra("ListProduct", (ArrayList<? extends Parcelable>) this.listProductOrder);
+                startActivity(intentBuyNow);
         }
     }
 

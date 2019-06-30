@@ -1,7 +1,9 @@
 package com.example.sellapp.View.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +17,14 @@ import android.widget.TextView;
 
 import com.example.sellapp.Adapter.CartDetailAdapter;
 import com.example.sellapp.Model.CartModel.Connect;
+import com.example.sellapp.Model.OrderModel.ProductOrder;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 import com.example.sellapp.R;
+import com.example.sellapp.View.CartDetailActivity;
+import com.example.sellapp.View.PaymentActivity;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,15 +36,18 @@ public class CartFragment extends Fragment {
     RecyclerView mRcvCartDetail;
     CartDetailAdapter mCartDetailAdapter;
     RecyclerView.LayoutManager mLayoutManager;
-    CheckBox CbItemCart;
     TextView mTxtTotalPrice;
     ImageButton mImgBtnCartDetail;
     Button mBtnBuyNow;
     int mTotalPrice = 0;
     boolean isCheckAll = false;
+    List<String> mListProduct;
+    List<ProductOrder> mListProductOrder;
+    boolean isCheckPause = false;
 
     public CartFragment() {
         // Required empty public constructor
+        mListProduct = new ArrayList<>();
     }
 
 
@@ -64,30 +73,56 @@ public class CartFragment extends Fragment {
         GetCartDetail();
 
         mImgBtnCartDetail.setOnClickListener(this::OnClick);
+        mBtnBuyNow.setOnClickListener(this::OnClick);
 
         return v;
     }
 
     private void OnClick(View v) {
-        if (isCheckAll) {
-            mImgBtnCartDetail.setImageResource(R.drawable.icon_uncheck_cart);
-            mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), false, 0, mDatabaseConnect);
-            mCartDetailAdapter.setOnCheckChange(this::CheckChange);
-            mRcvCartDetail.setAdapter(mCartDetailAdapter);
-            mCartDetailAdapter.notifyDataSetChanged();
-            isCheckAll = false;
-        }else {
-            mImgBtnCartDetail.setImageResource(R.drawable.icon_check_cart);
-            mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), true, 0, mDatabaseConnect);
-            mCartDetailAdapter.setOnCheckChange(this::CheckChange);
-            mRcvCartDetail.setAdapter(mCartDetailAdapter);
-            mCartDetailAdapter.notifyDataSetChanged();
-            isCheckAll = true;
+        switch (v.getId()) {
+            case R.id.img_all_cart_detail:
+                if (isCheckAll) {
+                    mImgBtnCartDetail.setImageResource(R.drawable.icon_uncheck_cart);
+                    mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), false, 0, mDatabaseConnect, mListProduct);
+                    mCartDetailAdapter.setOnCheckChange(this::CheckChange);
+                    mRcvCartDetail.setAdapter(mCartDetailAdapter);
+                    mCartDetailAdapter.notifyDataSetChanged();
+                    isCheckAll = false;
+                }else {
+                    mImgBtnCartDetail.setImageResource(R.drawable.icon_check_cart);
+                    mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), true, 0, mDatabaseConnect, mListProduct);
+                    mCartDetailAdapter.setOnCheckChange(this::CheckChange);
+                    mRcvCartDetail.setAdapter(mCartDetailAdapter);
+                    mCartDetailAdapter.notifyDataSetChanged();
+                    isCheckAll = true;
+                }
+                break;
+            case R.id.btn_buy_now_cart_detail:
+                if (this.mListProduct.size() < 1) {
+                    this.mListProductOrder = null;
+                }else {
+                    this.mListProductOrder = new ArrayList<>();
+                    for (int i = 0; i < this.mListProduct.size(); i++){
+                        for (int j = 0; j < getListCart().size(); j++) {
+                            if (this.mListProduct.get(i).equals(getListCart().get(j).getId())) {
+                                ProductOrder tempProductOrder = new ProductOrder();
+                                tempProductOrder.setmProductId(this.mListProduct.get(i));
+                                tempProductOrder.setmAmount(getListCart().get(j).getAmount());
+                                this.mListProductOrder.add(tempProductOrder);
+                            }
+                        }
+                    }
+                }
+
+                Intent intentBuyNow = new Intent(getActivity(), PaymentActivity.class);
+                intentBuyNow.putParcelableArrayListExtra("ListProduct", (ArrayList<? extends Parcelable>) this.mListProductOrder);
+                startActivity(intentBuyNow);
+                break;
         }
     }
 
     private void GetCartDetail() {
-        mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), false, this.mTotalPrice, mDatabaseConnect);
+        mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), false, this.mTotalPrice, mDatabaseConnect, mListProduct);
         mCartDetailAdapter.setOnCheckChange(this::CheckChange);
         mRcvCartDetail.setAdapter(mCartDetailAdapter);
         mCartDetailAdapter.notifyDataSetChanged();
@@ -100,11 +135,12 @@ public class CartFragment extends Fragment {
     }
 
     //Callback in adapter
-    public void CheckChange(boolean temp, int total_price) {
+    public void CheckChange(boolean temp, int total_price, List<String> list_product) {
         mTxtTotalPrice.setText(FortmartPrice(total_price));
-        isCheckBuyNow(total_price);
         this.mTotalPrice = total_price;
-        this.isCheckAll = temp;
+        isCheckAll = temp;
+        this.mListProduct = list_product;
+        isCheckBuyNow(total_price);
         if (temp)
             mImgBtnCartDetail.setImageResource(R.drawable.icon_check_cart);
         else
@@ -124,6 +160,25 @@ public class CartFragment extends Fragment {
         DecimalFormat mDecimalFormat = new DecimalFormat("###,###,###");
         String mPrice = mDecimalFormat.format(Price);
 
-        return mPrice;
+        return mPrice + " VND";
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isCheckPause) {
+            mCartDetailAdapter = new CartDetailAdapter(getListCart(), getContext(), false, this.mTotalPrice, mDatabaseConnect, mListProduct);
+            mCartDetailAdapter.setOnCheckChange(this::CheckChange);
+            mRcvCartDetail.setAdapter(mCartDetailAdapter);
+            mCartDetailAdapter.notifyDataSetChanged();
+            isCheckPause = false;
+        }
+        mTxtTotalPrice.setText("0 VND");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isCheckPause = true;
     }
 }

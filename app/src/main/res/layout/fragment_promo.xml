@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Fragment.PromoFragment"
+    android:orientation="vertical">
+
+    <ViewFlipper
+        android:id="@+id/view_flipper_promo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_menu_promotion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:paddingLeft="@dimen/_5sdp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_product_promotion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

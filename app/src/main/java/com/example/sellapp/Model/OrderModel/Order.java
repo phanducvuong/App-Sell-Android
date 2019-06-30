@@ -15,6 +15,18 @@ public class Order {
     @Expose
     private String mMessage;
 
+    @SerializedName("order_id")
+    @Expose
+    private String mOrder_id;
+
+    public String getmOrder_id() {
+        return mOrder_id;
+    }
+
+    public void setmOrder_id(String mOrder_id) {
+        this.mOrder_id = mOrder_id;
+    }
+
     public List<ListOrder> getmOrder() {
         return mOrder;
     }

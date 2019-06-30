@@ -1,7 +1,7 @@
 package com.example.sellapp.Util;
 
-import android.widget.CheckBox;
+import java.util.List;
 
 public interface OnCheckChange {
-    void CheckChange(boolean temp, int total_price);
+    void CheckChange(boolean temp, int total_price, List<String> list_product);
 }

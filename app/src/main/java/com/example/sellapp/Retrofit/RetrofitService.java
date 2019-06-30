@@ -4,14 +4,19 @@ import com.example.sellapp.Model.CategoryMenuModel.CategoryMenu;
 import com.example.sellapp.Model.CategoryModel.Category;
 import com.example.sellapp.Model.CommentModel.Comment;
 import com.example.sellapp.Model.CommentModel.Message;
+import com.example.sellapp.Model.OrderModel.Order;
 import com.example.sellapp.Model.ProductModel.Product;
 import com.example.sellapp.Model.ProductModel.ProductDetail;
+import com.example.sellapp.Model.PromoModel.Promotion;
 import com.example.sellapp.Model.SlideModel.Slide;
+import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -59,4 +64,11 @@ public interface RetrofitService {
                                     @Field("content") String mContent,
                                     @Field("number_star") String mNumberStar,
                                     @Field("date_comment") String mDateComment);
+
+    @POST("them-hoa-don")
+    @Headers("Content-Type:application/json")
+    Observable<Order> postOrder(@Body JsonObject mJsonOrder);
+
+    @GET("khuyen-mai")
+    Observable<Promotion> getAllPromo();
 }

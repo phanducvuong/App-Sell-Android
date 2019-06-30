@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.sellapp.Model.OrderModel.Order;
 import com.example.sellapp.Model.ProductModel.ListProduct;
 
 import java.util.ArrayList;
@@ -40,9 +41,16 @@ public class Connect {
         mAmount++;
         contentValues.put(ProductDatabase.CART_PRODUCT_AMOUNT, mAmount);
         long _id = database.update(ProductDatabase.TB_CART, contentValues, ProductDatabase.CART_PRODUCT_ID + "=" + "'" + product.getId() + "'", null);
-        if (_id > 0)
-            return true;
-        return false;
+        return _id > 0;
+    }
+
+    public boolean AddToOrderId(Order order) {
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ProductDatabase.ORDER_ID, order.getmOrder_id());
+
+        long id = database.insert(ProductDatabase.TB_ORDER, null, contentValues);
+        return id > 0;
     }
 
     public List<ListProduct> GetProductInCart() {
@@ -74,6 +82,12 @@ public class Connect {
 
     public boolean DeleteItemCart(String product_id) {
         int check = database.delete(ProductDatabase.TB_CART, ProductDatabase.CART_PRODUCT_ID + " = " + "'" + product_id + "'", null);
+        return check > 0;
+    }
+
+    public boolean DeleteAllItemInCart() {
+        int check = database.delete(ProductDatabase.TB_CART, null, null);
+        database.close();
         return check > 0;
     }
 

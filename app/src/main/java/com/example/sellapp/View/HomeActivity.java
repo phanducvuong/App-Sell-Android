@@ -12,12 +12,14 @@ import com.example.sellapp.R;
 import com.example.sellapp.View.Fragment.CartFragment;
 import com.example.sellapp.View.Fragment.HomeFragment;
 import com.example.sellapp.View.Fragment.PersonFragment;
+import com.example.sellapp.View.Fragment.PromoFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
     private HomeFragment mHomeFragment;
     private CartFragment mCartFragment;
     private PersonFragment mPersonFragment;
+    private PromoFragment mPromoFragment;
 
     private BottomNavigationView mItemNav;
 
@@ -31,6 +33,7 @@ public class HomeActivity extends AppCompatActivity {
         mHomeFragment = new HomeFragment();
         mCartFragment = new CartFragment();
         mPersonFragment = new PersonFragment();
+        mPromoFragment = new PromoFragment();
 
         setFragment(mHomeFragment);
 
@@ -47,6 +50,10 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 case R.id.ic_person: {
                     setFragment(mPersonFragment);
+                    return true;
+                }
+                case R.id.ic_promo: {
+                    setFragment(mPromoFragment);
                     return true;
                 }
                 default: return true;

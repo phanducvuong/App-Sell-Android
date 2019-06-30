@@ -26,6 +26,7 @@ import com.example.sellapp.View.CartDetailActivity;
 import com.example.sellapp.View.HomeActivity;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.ViewHolder> {
@@ -37,17 +38,20 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
     private int count = 0;
     private int mTotalPrice;
     private Connect db;
+    private List<String> mListProduct;
 
     public void setOnCheckChange(OnCheckChange checkChange) {
         this.mCheckChange = checkChange;
     }
 
-    public CartDetailAdapter(List<ListProduct> ListCartDetail, Context Context, boolean isCheck, int total_price, Connect _db) {
+    public CartDetailAdapter(List<ListProduct> ListCartDetail, Context Context, boolean isCheck, int total_price, Connect _db, List<String> list_product) {
         this.mListCartDetail = ListCartDetail;
         this.mContext = Context;
         this.isCheckAll = isCheck;
         this.mTotalPrice = total_price;
         this.db = _db;
+        this.mListProduct = list_product;
+        this.mListProduct = new ArrayList<>();
     }
 
     @NonNull
@@ -63,6 +67,7 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
         ListProduct product = mListCartDetail.get(i);
 
         holder.mTxtNameItemCart.setText(product.getProductName());
+        holder.mTxtNameItemCart.setTag(i);
         holder.mTxtPriceCart.setText(FortmartPrice(product.getProductPrice()) + " VND");
         holder.mTxtPriceCart.setTag(product.getProductPrice());
 
@@ -71,6 +76,7 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
         holder.mImgRemoveCart.setTag(product.getId());
         holder.mCbCart.setTag(product.getId());
         holder.mTxtAmount.setText(String.valueOf(product.getAmount()));
+        holder.mTxtAmount.setTag(product.getId());
         holder.mImgIconMinus.setTag(product.getId());
         holder.mImgIconPlus.setTag(product.getId());
 
@@ -80,18 +86,18 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
             int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
             int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
             this.mTotalPrice += (tempPrice * tempAmount);
+            this.mListProduct.add(mListCartDetail.get(i).getId());
             if (this.count == mListCartDetail.size())
-                mCheckChange.CheckChange(true, this.mTotalPrice);
+                mCheckChange.CheckChange(true, this.mTotalPrice, this.mListProduct);
         }
         else {
             this.mTotalPrice = 0;
+            this.mListProduct = new ArrayList<>();
             holder.mCbCart.setChecked(false);
-            mCheckChange.CheckChange(false, this.mTotalPrice);
+            mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
         }
 
-        holder.mImgRemoveCart.setOnClickListener(v -> {
-            showDialog(v.getTag().toString(), db, i, holder.mCbCart, holder.mTxtAmount);
-        });
+        holder.mImgRemoveCart.setOnClickListener(v -> showDialog(v.getTag().toString(), db, i, holder.mCbCart, holder.mTxtAmount));
 
         holder.mCbCart.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -99,15 +105,17 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
                 int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
                 int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
                 this.mTotalPrice += (tempPrice * tempAmount);
+                this.mListProduct.add(holder.mCbCart.getTag().toString());
                 if (this.count == mListCartDetail.size())
-                    mCheckChange.CheckChange(true, this.mTotalPrice);
-                else mCheckChange.CheckChange(false, this.mTotalPrice);
+                    mCheckChange.CheckChange(true, this.mTotalPrice, this.mListProduct);
+                else mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
             }
             else {
                 int tempPrice = Integer.valueOf(holder.mTxtPriceCart.getTag().toString());
                 int tempAmount = Integer.valueOf(holder.mTxtAmount.getText().toString());
                 this.mTotalPrice -= (tempPrice * tempAmount);
-                mCheckChange.CheckChange(false, this.mTotalPrice);
+                this.mListProduct.remove(holder.mCbCart.getTag());
+                mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
                 this.count--;
             }
         });
@@ -121,9 +129,9 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
                 if (holder.mCbCart.isChecked()) {
                     this.mTotalPrice -= tempPrice;
                     if (this.count == mListCartDetail.size())
-                        mCheckChange.CheckChange(true, this.mTotalPrice);
-                    else mCheckChange.CheckChange(false, this.mTotalPrice);
-                }else mCheckChange.CheckChange(false, this.mTotalPrice);
+                        mCheckChange.CheckChange(true, this.mTotalPrice, this.mListProduct);
+                    else mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
+                }else mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
                 db.Connection(mContext);
                 db.updateAmountInCart(holder.mImgIconMinus.getTag().toString(), tempAmount);
             }
@@ -136,9 +144,9 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
             if (holder.mCbCart.isChecked()) {
                 this.mTotalPrice += tempPrice;
                 if (this.count == mListCartDetail.size())
-                    mCheckChange.CheckChange(true, this.mTotalPrice);
-                else mCheckChange.CheckChange(false, this.mTotalPrice);
-            } else mCheckChange.CheckChange(false, this.mTotalPrice);
+                    mCheckChange.CheckChange(true, this.mTotalPrice, this.mListProduct);
+                else mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
+            } else mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
             db.updateAmountInCart(holder.mImgIconPlus.getTag().toString(), tempAmount);
         });
     }
@@ -153,17 +161,18 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
                 int tempPrice = mListCartDetail.get(position).getProductPrice();
                 int tempAmount = Integer.valueOf(txt_amount.getText().toString());
                 this.mTotalPrice -= (tempPrice * tempAmount);
+                this.mListProduct.remove(position);
                 if (this.count == mListCartDetail.size()) {
                     this.count = mListCartDetail.size() - 1;
-                    mCheckChange.CheckChange(true, this.mTotalPrice);
+                    mCheckChange.CheckChange(true, this.mTotalPrice, this.mListProduct);
                 }
-                else mCheckChange.CheckChange(false, this.mTotalPrice);
+                else mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
                 mListCartDetail.remove(position);
                 this.count--;
             }else {
                 mListCartDetail.remove(position);
-                if (this.count == mListCartDetail.size()) mCheckChange.CheckChange(true, this.mTotalPrice);
-                else mCheckChange.CheckChange(false, this.mTotalPrice);
+                if (this.count == mListCartDetail.size()) mCheckChange.CheckChange(true, this.mTotalPrice, this.mListProduct);
+                else mCheckChange.CheckChange(false, this.mTotalPrice, this.mListProduct);
             }
             notifyItemRemoved(position);
             db.DeleteItemCart(product_id);
